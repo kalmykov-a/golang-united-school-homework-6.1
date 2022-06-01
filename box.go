@@ -1,7 +1,13 @@
 package golang_united_school_homework
 
 import (
-	"fmt"
+	"errors"
+)
+
+var (
+	errorOutOfRange = errors.New("out of the shapesCapacity range")
+	errorNotExist   = errors.New("shape by index doesn't exist or index went out of the range")
+	errorNoCircles  = errors.New("circles are not exist in the list")
 )
 
 // box contains list of shapes and able to perform operations on them
@@ -21,7 +27,7 @@ func NewBox(shapesCapacity int) *box {
 // returns the error in case it goes out of the shapesCapacity range.
 func (b *box) AddShape(shape Shape) error {
 	if len(b.shapes) >= b.shapesCapacity {
-		return fmt.Errorf("out of the shapesCapacity range")
+		return errorOutOfRange
 	} else {
 		b.shapes = append(b.shapes, shape)
 		return nil
@@ -32,7 +38,7 @@ func (b *box) AddShape(shape Shape) error {
 // whether shape by index doesn't exist or index went out of the range, then it returns an error
 func (b *box) GetByIndex(i int) (Shape, error) {
 	if i >= b.shapesCapacity-1 || len(b.shapes)-1 < i {
-		return nil, fmt.Errorf("shape by index doesn't exist or index went out of the range")
+		return nil, errorOutOfRange
 	} else {
 		return b.shapes[i], nil
 	}
@@ -42,7 +48,7 @@ func (b *box) GetByIndex(i int) (Shape, error) {
 // whether shape by index doesn't exist or index went out of the range, then it returns an error
 func (b *box) ExtractByIndex(i int) (Shape, error) {
 	if i >= b.shapesCapacity-1 || len(b.shapes)-1 < i {
-		return nil, fmt.Errorf("shape by index doesn't exist or index went out of the range")
+		return nil, errorOutOfRange
 	} else {
 		res := b.shapes[i]
 		b.shapes = append(b.shapes[:i], b.shapes[i+1:]...)
@@ -53,8 +59,8 @@ func (b *box) ExtractByIndex(i int) (Shape, error) {
 // ReplaceByIndex allows replacing shape by index and returns removed shape.
 // whether shape by index doesn't exist or index went out of the range, then it returns an error
 func (b *box) ReplaceByIndex(i int, shape Shape) (Shape, error) {
-	if i >= b.shapesCapacity-1 || len(b.shapes)-1 < i {
-		return nil, fmt.Errorf("shape by index doesn't exist or index went out of the range")
+	if i >= b.shapesCapacity-1 || len(b.shapes) < i {
+		return nil, errorNotExist
 	} else {
 		var res Shape
 		res, b.shapes[i] = b.shapes[i], shape
@@ -93,7 +99,7 @@ func (b *box) RemoveAllCircles() error {
 		}
 	}
 	if count == 0 {
-		return fmt.Errorf("circles are not exist in the list")
+		return errorNoCircles
 	} else {
 		for i, v := range indexes {
 			b.shapes = append(b.shapes[:v-i], b.shapes[v-i+1:]...)
