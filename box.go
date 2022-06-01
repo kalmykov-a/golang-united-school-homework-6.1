@@ -92,7 +92,7 @@ func (b *box) RemoveAllCircles() error {
 	count := 0
 	var indexes []int
 	for i, sh := range b.shapes {
-		if sh.(*Circle) != nil {
+		if _, ok := sh.(*Circle); ok {
 			count++
 			indexes = append(indexes, i)
 		}
